@@ -1,0 +1,385 @@
+<section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  @if (cargando()) {
+    <div class="glass-panel rounded-3xl p-10">
+      <app-skeleton-loader [filas]="10" />
+    </div>
+  } @else if (error()) {
+    <div class="glass-panel rounded-3xl p-10 text-center">
+      <p class="font-display text-lg text-gold-light">📊 {{ error() }}</p>
+    </div>
+  } @else if (general(); as resumen) {
+    <header class="mb-8 flex flex-wrap items-end justify-between gap-5">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.35em] text-gold-light">Dashboard</p>
+        <h1 class="mt-2 font-display text-3xl font-black text-white sm:text-4xl">
+          Estadísticas generales
+        </h1>
+        <p class="mt-2 text-sm text-slate-400">
+          Métricas calculadas en vivo desde la base de datos: cartelera, funciones, butacas y
+          salas.
+        </p>
+      </div>
+
+      <div
+        class="glass-panel rounded-2xl px-5 py-3 text-[11px] uppercase tracking-[0.2em] text-slate-400"
+      >
+        {{ resumen.totalSalas }} salas registradas
+      </div>
+    </header>
+
+    <dl class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div class="glass-panel rounded-2xl p-5">
+        <dt class="text-[10px] uppercase tracking-[0.25em] text-slate-500">Películas</dt>
+        <dd class="mt-2 font-display text-3xl font-black text-white">
+          {{ resumen.totalPeliculas }}
+        </dd>
+        <p class="mt-2 text-[11px] text-slate-400">
+          {{ resumen.enCartelera }} en cartelera · {{ resumen.proximamente }} próximas ·
+          {{ resumen.inactivas }} inactivas
+        </p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-5">
+        <dt class="text-[10px] uppercase tracking-[0.25em] text-slate-500">Funciones</dt>
+        <dd class="mt-2 font-display text-3xl font-black text-white">
+          {{ resumen.totalFunciones }}
+        </dd>
+        <p class="mt-2 text-[11px] text-slate-400">
+          {{ resumen.funcionesHoy }} hoy · {{ resumen.funcionesFuturas }} por venir
+        </p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-5">
+        <dt class="text-[10px] uppercase tracking-[0.25em] text-slate-500">Ocupación global</dt>
+        <dd class="mt-2 font-display text-3xl font-black text-gold-light">
+          {{ resumen.ocupacionGlobal }}%
+        </dd>
+        <p class="mt-2 text-[11px] text-slate-400">
+          {{ resumen.butacasOcupadas }} / {{ resumen.totalButacas }} butacas ocupadas
+        </p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-5">
+        <dt class="text-[10px] uppercase tracking-[0.25em] text-slate-500">Ingresos estimados</dt>
+        <dd class="mt-2 font-display text-3xl font-black text-white">
+          {{ resumen.ingresosEstimados | currency }}
+        </dd>
+        <p class="mt-2 text-[11px] text-slate-400">
+          {{ resumen.butacasBloqueadas }} bloqueadas · {{ resumen.butacasDisponibles }} disponibles
+        </p>
+      </div>
+
+      <div class="glass-panel rounded-2xl p-5">
+        <dt class="text-[10px] uppercase tracking-[0.25em] text-slate-500">Duración promedio</dt>
+        <dd class="mt-2 font-display text-3xl font-black text-white">
+          {{ resumen.duracionPromedio | duration }}
+        </dd>
+        <p class="mt-2 text-[11px] text-slate-400">
+          {{ resumen.duracionMinima | duration }} – {{ resumen.duracionMaxima | duration }}
+        </p>
+      </div>
+    </dl>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+      @for (distribucion of distribuciones(); track distribucion.titulo) {
+        <div class="glass-panel rounded-3xl p-5">
+          <h2 class="font-display text-sm font-bold uppercase tracking-[0.25em] text-slate-200">
+            {{ distribucion.titulo }}
+          </h2>
+          <div class="mt-4 space-y-3">
+            @for (item of distribucion.items; track item.etiqueta) {
+              <div>
+                <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+                  <span class="truncate text-slate-300">{{ item.etiqueta }}</span>
+                  <span class="shrink-0 text-slate-500">{{ item.total }} · {{ item.porcentaje }}%</span>
+                </div>
+                <div class="h-1.5 overflow-hidden rounded-full bg-white/5">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r from-gold-dark to-gold-light"
+                    [style.width.%]="item.porcentaje"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <section class="mt-10">
+      <h2 class="font-display text-2xl font-bold text-white">Estadísticas por película</h2>
+      <p class="mt-1 text-sm text-slate-400">
+        Ranking por ingresos estimados sobre butacas ocupadas de cada película.
+      </p>
+
+      <div class="glass-panel mt-6 overflow-hidden rounded-3xl">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[1000px] text-left text-sm">
+            <thead>
+              <tr class="border-b border-white/5 text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                <th class="px-4 py-4">#</th>
+                <th class="px-4 py-4">Película</th>
+                <th class="px-4 py-4">Duración</th>
+                <th class="px-4 py-4 text-center">Funciones</th>
+                <th class="px-4 py-4">Salas</th>
+                <th class="px-4 py-4">Formatos</th>
+                <th class="px-4 py-4">Ocupación</th>
+                <th class="px-4 py-4 text-center">Butacas</th>
+                <th class="px-4 py-4 text-center">Bloqueadas</th>
+                <th class="px-4 py-4 text-right">Ingresos</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (fila of estadisticasPeliculas(); track fila.pelicula.id; let indice = $index) {
+                <tr class="border-b border-white/5 last:border-0 hover:bg-white/[0.02]">
+                  <td class="px-4 py-4 font-display text-slate-500">{{ indice + 1 }}</td>
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <img
+                        [src]="fila.pelicula.posterUrl"
+                        [alt]="'Póster de ' + fila.pelicula.titulo"
+                        loading="lazy"
+                        class="h-14 w-10 rounded-lg border border-gold/20 object-cover"
+                      />
+                      <div>
+                        <p class="font-semibold text-white">{{ fila.pelicula.titulo }}</p>
+                        <p class="mt-0.5 text-[10px] uppercase tracking-[0.15em] text-slate-500">
+                          {{ fila.pelicula.genero }} · {{ fila.pelicula.clasificacion }} ·
+                          {{ fila.pelicula.estado }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 text-slate-300">
+                    {{ fila.pelicula.duracionMinutos | duration }}
+                  </td>
+                  <td class="px-4 py-4 text-center text-slate-300">{{ fila.totalFunciones }}</td>
+                  <td class="px-4 py-4">
+                    <p class="text-slate-300">{{ fila.salas.length }} salas</p>
+                    <p class="mt-0.5 text-[10px] text-slate-500">{{ fila.salas.join(' · ') }}</p>
+                  </td>
+                  <td class="px-4 py-4">
+                    <p class="text-slate-300">{{ fila.formatos.join(' / ') }}</p>
+                    <p class="mt-0.5 text-[10px] uppercase tracking-[0.15em] text-slate-500">
+                      {{ fila.idiomas.join(' · ') }}
+                    </p>
+                  </td>
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="h-1.5 w-24 overflow-hidden rounded-full bg-white/5">
+                        <div
+                          class="h-full rounded-full bg-gradient-to-r from-gold-dark to-gold-light"
+                          [style.width.%]="fila.ocupacion"
+                        ></div>
+                      </div>
+                      <span class="font-display text-xs text-gold-light">{{ fila.ocupacion }}%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-4 text-center text-slate-300">
+                    {{ fila.ocupadas }}/{{ fila.totalButacas }}
+                  </td>
+                  <td class="px-4 py-4 text-center text-slate-300">{{ fila.bloqueadas }}</td>
+                  <td class="px-4 py-4 text-right font-display font-bold text-gold-light">
+                    {{ fila.ingresosEstimados | currency }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="font-display text-2xl font-bold text-white">Ocupación por sala</h2>
+      <p class="mt-1 text-sm text-slate-400">
+        Datos complementarios del catálogo de salas registrado en la base de datos.
+      </p>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        @for (sala of estadisticasSalas(); track sala.sala.id) {
+          <div class="glass-panel rounded-3xl p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="font-display font-bold text-white">{{ sala.sala.nombre }}</h3>
+                <p class="mt-1 text-[10px] uppercase tracking-[0.25em] text-slate-500">
+                  {{ sala.sala.estado }}
+                </p>
+              </div>
+              <app-badge-sala [texto]="sala.sala.tipo" />
+            </div>
+
+            <dl class="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div class="rounded-xl bg-white/5 p-2">
+                <dt class="text-[10px] uppercase tracking-[0.15em] text-slate-500">Funciones</dt>
+                <dd class="mt-1 font-display text-lg font-bold text-white">
+                  {{ sala.totalFunciones }}
+                </dd>
+              </div>
+              <div class="rounded-xl bg-white/5 p-2">
+                <dt class="text-[10px] uppercase tracking-[0.15em] text-slate-500">Películas</dt>
+                <dd class="mt-1 font-display text-lg font-bold text-white">{{ sala.peliculas }}</dd>
+              </div>
+              <div class="rounded-xl bg-white/5 p-2">
+                <dt class="text-[10px] uppercase tracking-[0.15em] text-slate-500">Butacas</dt>
+                <dd class="mt-1 font-display text-lg font-bold text-white">
+                  {{ sala.ocupadas }}/{{ sala.totalButacas }}
+                </dd>
+              </div>
+            </dl>
+
+            <div class="mt-4">
+              <div class="mb-1 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Ocupación</span>
+                <span class="font-display text-gold-light">{{ sala.ocupacion }}%</span>
+              </div>
+              <div class="h-1.5 overflow-hidden rounded-full bg-white/5">
+                <div
+                  class="h-full rounded-full bg-gradient-to-r from-gold-dark to-gold-light"
+                  [style.width.%]="sala.ocupacion"
+                ></div>
+              </div>
+            </div>
+
+            @if (sala.proximaFuncion) {
+              <p class="mt-4 text-[10px] uppercase tracking-[0.15em] text-slate-500">
+                Próxima función:
+                <span class="text-slate-300">{{ sala.proximaFuncion | date: 'dd/MM HH:mm' }}</span>
+              </p>
+            } @else {
+              <p class="mt-4 text-[10px] uppercase tracking-[0.15em] text-slate-500">
+                Sin funciones programadas
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="mt-10">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold text-white">Programación general</h2>
+          <p class="mt-1 text-sm text-slate-400">
+            Todas las funciones organizadas por película, día y sala.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex flex-wrap gap-2">
+            @for (opcion of opcionesDia; track opcion.valor) {
+              <button
+                type="button"
+                (click)="filtroDia.set(opcion.valor)"
+                class="rounded-full px-5 py-2 font-display text-xs font-semibold uppercase tracking-[0.2em] transition-all duration-300"
+                [class]="
+                  filtroDia() === opcion.valor
+                    ? 'glass-panel-gold text-gold-light shadow-gold-glow'
+                    : 'glass-panel text-slate-300 hover:border-gold/40'
+                "
+              >
+                {{ opcion.etiqueta }}
+              </button>
+            }
+          </div>
+          <span class="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+            {{ totalFunciones() }} funciones · {{ totalSalas() }} salas
+          </span>
+        </div>
+      </div>
+
+      @if (agenda().length > 0) {
+        <div class="mt-6 space-y-6">
+          @for (grupo of agenda(); track grupo.pelicula.id) {
+            <article class="glass-panel rounded-3xl p-5 sm:p-6">
+              <div class="grid gap-6 lg:grid-cols-[110px_1fr]">
+                <img
+                  [src]="grupo.pelicula.posterUrl"
+                  [alt]="'Póster de ' + grupo.pelicula.titulo"
+                  loading="lazy"
+                  class="mx-auto w-24 rounded-2xl border border-gold/20 lg:w-full"
+                />
+
+                <div class="space-y-6">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h3 class="font-display text-xl font-bold text-white">
+                        {{ grupo.pelicula.titulo }}
+                      </h3>
+                      <div
+                        class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] uppercase tracking-[0.2em] text-slate-400"
+                      >
+                        <span>{{ grupo.pelicula.genero }}</span>
+                        <span class="text-slate-600">•</span>
+                        <span>{{ grupo.pelicula.duracionMinutos | duration }}</span>
+                        <span class="text-slate-600">•</span>
+                        <span>{{ grupo.pelicula.clasificacion }}</span>
+                      </div>
+                    </div>
+
+                    <a
+                      [routerLink]="['/pelicula', grupo.pelicula.id]"
+                      class="font-display text-[11px] font-semibold uppercase tracking-[0.25em] text-gold transition-colors duration-300 hover:text-gold-light"
+                    >
+                      Ver detalle →
+                    </a>
+                  </div>
+
+                  @for (dia of grupo.dias; track dia.clave) {
+                    <div>
+                      <div class="mb-3 flex items-center gap-3">
+                        <h4
+                          class="font-display text-xs font-bold uppercase tracking-[0.25em] text-gold-light"
+                        >
+                          {{ dia.etiqueta }}
+                        </h4>
+                        <span class="h-px flex-1 bg-white/5"></span>
+                        <span class="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+                          {{ dia.funciones.length }} funciones
+                        </span>
+                      </div>
+
+                      <div class="flex flex-wrap gap-3">
+                        @for (funcion of dia.funciones; track funcion.id) {
+                          <button
+                            type="button"
+                            (click)="reservar(funcion)"
+                            class="glass-panel w-40 rounded-2xl p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/40"
+                          >
+                            <div class="flex items-center justify-between gap-2">
+                              <p class="font-display text-lg font-bold text-white">
+                                {{ funcion.fechaHoraInicio | date: 'HH:mm' }}
+                              </p>
+                              <span class="text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                                {{ funcion.formato }}
+                              </span>
+                            </div>
+                            <p
+                              class="mt-1 truncate text-[11px] uppercase tracking-[0.15em] text-slate-400"
+                            >
+                              {{ funcion.sala.nombre }}
+                            </p>
+                            <p class="mt-2 font-display text-sm font-bold text-gold-light">
+                              {{ funcion.precioBase | currency }}
+                            </p>
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="glass-panel mt-6 rounded-2xl p-12 text-center">
+          <p class="font-display text-lg text-slate-300">
+            No hay funciones programadas para este día.
+          </p>
+          <p class="mt-2 text-sm text-slate-500">Prueba con otro filtro de fecha.</p>
+        </div>
+      }
+    </section>
+  }
+</section>

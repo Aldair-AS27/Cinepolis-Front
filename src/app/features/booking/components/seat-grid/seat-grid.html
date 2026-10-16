@@ -1,0 +1,72 @@
+<div class="glass-panel rounded-3xl p-6 sm:p-10">
+  <!-- Pantalla curva futurista -->
+  <div class="mb-12 flex flex-col items-center">
+    <svg viewBox="0 0 640 90" class="w-full max-w-3xl" aria-hidden="true">
+      <defs>
+        <linearGradient id="lienzoPantalla" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FBF0B9" stop-opacity="0.95" />
+          <stop offset="55%" stop-color="#D4AF37" stop-opacity="0.55" />
+          <stop offset="100%" stop-color="#112240" stop-opacity="0.25" />
+        </linearGradient>
+      </defs>
+      <path
+        class="pantalla-curva"
+        d="M10 20 Q320 -30 630 20 L600 70 Q320 26 40 70 Z"
+        fill="url(#lienzoPantalla)"
+      />
+    </svg>
+    <span class="mt-3 font-display text-[11px] uppercase tracking-[0.6em] text-slate-400">
+      Pantalla
+    </span>
+    <p class="mt-1 text-[11px] text-slate-600">Vista perfecta desde todas las filas</p>
+  </div>
+
+  <!-- Cuadrícula por fila -->
+  <div class="flex flex-col items-center gap-3 overflow-x-auto pb-2">
+    @for (fila of filas(); track fila.fila) {
+      <div class="flex items-center gap-3">
+        <span class="w-6 font-display text-sm font-bold text-gold-dark">{{ fila.fila }}</span>
+        <div class="flex gap-2">
+          @for (butaca of fila.butacas; track butaca.id) {
+            <button
+              type="button"
+              [class]="claseButaca(butaca)"
+              [disabled]="!seleccionable(butaca)"
+              [attr.aria-pressed]="idsSeleccionados().has(butaca.id)"
+              [attr.aria-label]="'Butaca ' + butaca.butaca.codigo + ' (' + butaca.estado + ')'"
+              [title]="butaca.butaca.codigo + ' · ' + butaca.butaca.tipo"
+              (click)="toggle(butaca)"
+            >
+              {{ butaca.butaca.numero }}
+              @if (butaca.butaca.tipo === 'VIP') {
+                <span class="absolute -right-1 -top-2 text-[10px]">👑</span>
+              }
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Leyenda -->
+  <div class="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.15em] text-slate-400">
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border border-white/10 bg-cinepolis-royal/80"></span> Disponible
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border border-gold bg-gold shadow-gold-glow"></span> Seleccionada
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border border-gold/60 bg-cinepolis-royal/80"></span> 👑 VIP
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border border-sky-400/50 bg-sky-900/30"></span> Accesible
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border-transparent bg-slate-800/50"></span> Ocupada
+    </span>
+    <span class="flex items-center gap-2">
+      <span class="h-4 w-4 rounded-t-md border border-amber-500/40 bg-amber-900/40"></span> Bloqueada
+    </span>
+  </div>
+</div>

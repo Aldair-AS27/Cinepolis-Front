@@ -1,0 +1,41 @@
+<div class="space-y-8">
+  @for (grupo of grupos(); track grupo.sala) {
+    <div>
+      <div class="mb-4 flex flex-wrap items-center gap-3">
+        <h3 class="font-display text-sm font-bold uppercase tracking-[0.25em] text-slate-200">
+          {{ grupo.sala }}
+        </h3>
+        <app-badge-sala [texto]="grupo.tipoSala" />
+        <span class="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+          {{ grupo.totalFunciones }} funciones
+        </span>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        @for (funcion of grupo.funciones; track funcion.id) {
+          <button
+            type="button"
+            (click)="seleccionar(funcion)"
+            class="w-40 rounded-2xl p-4 text-left transition-all duration-300"
+            [class]="
+              seleccionada() === funcion.id
+                ? 'glass-panel-gold scale-[1.03] shadow-gold-glow'
+                : 'glass-panel hover:-translate-y-0.5 hover:border-gold/40'
+            "
+          >
+            <p class="font-display text-xl font-bold text-white">
+              {{ funcion.fechaHoraInicio | date: 'HH:mm' }}
+            </p>
+            <p class="mt-1 text-[11px] uppercase tracking-[0.15em] text-slate-400">
+              {{ funcion.idioma }}
+            </p>
+            <p class="mt-2 text-sm font-bold text-gold-light">
+              {{ funcion.precioBase | currency }}
+            </p>
+            <p class="text-[11px] uppercase tracking-[0.2em] text-slate-500">{{ funcion.formato }}</p>
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

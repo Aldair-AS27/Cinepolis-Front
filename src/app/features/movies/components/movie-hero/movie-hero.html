@@ -1,0 +1,44 @@
+<section class="relative mx-auto max-w-7xl overflow-hidden rounded-3xl border border-white/5">
+  <img
+    [src]="pelicula().backdropUrl"
+    [alt]="'Backdrop de ' + pelicula().titulo"
+    class="absolute inset-0 h-full w-full object-cover"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-cinepolis-bg via-cinepolis-bg/70 to-cinepolis-bg/20"></div>
+
+  <div class="relative flex min-h-[440px] flex-col justify-end gap-5 p-6 sm:p-10 lg:p-14">
+    <div class="flex flex-wrap items-center gap-3">
+      <app-badge-sala [texto]="pelicula().formatoDestacado" />
+      <span
+        class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-slate-300"
+      >
+        {{ pelicula().genero }}
+      </span>
+      <span
+        class="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-light"
+      >
+        {{ pelicula().clasificacion }}
+      </span>
+    </div>
+
+    <h1
+      class="font-display text-4xl font-black leading-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)] sm:text-5xl lg:text-6xl"
+    >
+      {{ pelicula().titulo }}
+    </h1>
+
+    <p class="max-w-2xl text-sm leading-relaxed text-slate-300 sm:text-base">
+      {{ pelicula().sinopsis }}
+    </p>
+
+    <div class="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.2em] text-slate-400">
+      <span class="text-gold-light">{{ pelicula().duracionMinutos | duration }}</span>
+      <span class="text-gold-dark">•</span>
+      <span>Función destacada de hoy</span>
+    </div>
+
+    <div class="pt-2">
+      <app-gold-button (presionado)="verDetalle.emit(pelicula())">Ver horarios</app-gold-button>
+    </div>
+  </div>
+</section>

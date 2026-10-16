@@ -1,0 +1,32 @@
+<section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  @if (cargando()) {
+    <div class="glass-panel rounded-3xl p-10">
+      <app-skeleton-loader [filas]="5" />
+    </div>
+  } @else if (error()) {
+    <div class="glass-panel rounded-3xl p-10 text-center">
+      <p class="font-display text-lg text-gold-light">🎟️ {{ error() }}</p>
+    </div>
+  } @else {
+    @if (destacada(); as peliculaDestacada) {
+      <app-movie-hero [pelicula]="peliculaDestacada" (verDetalle)="irAlDetalle($event)" />
+    }
+
+    <div id="cartelera" class="mt-10 space-y-6">
+      <app-movie-filter (filtros)="aplicarFiltros($event)" />
+
+      @if (filtradas().length > 0) {
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          @for (pelicula of filtradas(); track pelicula.id) {
+            <app-movie-card [pelicula]="pelicula" (verFunciones)="irAlDetalle($event)" />
+          }
+        </div>
+      } @else {
+        <div class="glass-panel rounded-2xl p-12 text-center">
+          <p class="font-display text-lg text-slate-300">No encontramos películas con esos filtros.</p>
+          <p class="mt-2 text-sm text-slate-500">Prueba con otro género, formato o estado.</p>
+        </div>
+      }
+    </div>
+  }
+</section>

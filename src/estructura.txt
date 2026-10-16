@@ -1,0 +1,140 @@
+./
+├── app/
+│   ├── app.component.ts
+│   ├── app.config.ts
+│   ├── app.html
+│   ├── app.routes.ts
+│   ├── app.scss
+│   ├── app.spec.ts
+│   ├── app.ts
+│   ├── core/
+│   │   ├── config/
+│   │   ├── interceptors/
+│   │   │   ├── api-response-interceptor.spec.ts
+│   │   │   ├── api-response-interceptor.ts
+│   │   │   ├── error-interceptor.spec.ts
+│   │   │   ├── error-interceptor.ts
+│   │   │   ├── mock-backend-interceptor.spec.ts
+│   │   │   └── mock-backend-interceptor.ts
+│   │   ├── layout/
+│   │   │   ├── footer/
+│   │   │   │   ├── footer.html
+│   │   │   │   ├── footer.scss
+│   │   │   │   ├── footer.spec.ts
+│   │   │   │   └── footer.ts
+│   │   │   ├── navbar/
+│   │   │   │   ├── navbar.html
+│   │   │   │   ├── navbar.scss
+│   │   │   │   ├── navbar.spec.ts
+│   │   │   │   └── navbar.ts
+│   │   │   └── shell/
+│   │   │       ├── shell.html
+│   │   │       ├── shell.scss
+│   │   │       ├── shell.spec.ts
+│   │   │       └── shell.ts
+│   │   └── models/
+│   │       └── cinema-domain.models.ts
+│   ├── features/
+│   │   ├── booking/
+│   │   │   ├── components/
+│   │   │   │   ├── booking-summary/
+│   │   │   │   │   ├── booking-summary.html
+│   │   │   │   │   ├── booking-summary.scss
+│   │   │   │   │   ├── booking-summary.spec.ts
+│   │   │   │   │   └── booking-summary.ts
+│   │   │   │   ├── seat-grid/
+│   │   │   │   │   ├── seat-grid.html
+│   │   │   │   │   ├── seat-grid.scss
+│   │   │   │   │   ├── seat-grid.spec.ts
+│   │   │   │   │   └── seat-grid.ts
+│   │   │   │   └── showtime-selector/
+│   │   │   │       ├── showtime-selector.html
+│   │   │   │       ├── showtime-selector.scss
+│   │   │   │       ├── showtime-selector.spec.ts
+│   │   │   │       └── showtime-selector.ts
+│   │   │   ├── models/
+│   │   │   │   ├── butaca.model.ts
+│   │   │   │   ├── funcion-butaca.model.ts
+│   │   │   │   ├── funcion-horario.model.ts
+│   │   │   │   └── sala.model.ts
+│   │   │   ├── pages/
+│   │   │   │   └── seat-selection-page/
+│   │   │   │       ├── seat-selection-page.html
+│   │   │   │       ├── seat-selection-page.scss
+│   │   │   │       ├── seat-selection-page.spec.ts
+│   │   │   │       └── seat-selection-page.ts
+│   │   │   └── services/
+│   │   │       ├── butaca-state.service.spec.ts
+│   │   │       ├── butaca-state.service.ts
+│   │   │       ├── funcion.service.spec.ts
+│   │   │       └── funcion.service.ts
+│   │   └── movies/
+│   │       ├── components/
+│   │       │   ├── movie-card/
+│   │       │   │   ├── movie-card.html
+│   │       │   │   ├── movie-card.scss
+│   │       │   │   ├── movie-card.spec.ts
+│   │       │   │   └── movie-card.ts
+│   │       │   ├── movie-filter/
+│   │       │   │   ├── movie-filter.html
+│   │       │   │   ├── movie-filter.scss
+│   │       │   │   ├── movie-filter.spec.ts
+│   │       │   │   └── movie-filter.ts
+│   │       │   └── movie-hero/
+│   │       │       ├── movie-hero.html
+│   │       │       ├── movie-hero.scss
+│   │       │       ├── movie-hero.spec.ts
+│   │       │       └── movie-hero.ts
+│   │       ├── models/
+│   │       │   └── pelicula.model.ts
+│   │       ├── pages/
+│   │       │   ├── catalog-page/
+│   │       │   │   ├── catalog-page.html
+│   │       │   │   ├── catalog-page.scss
+│   │       │   │   ├── catalog-page.spec.ts
+│   │       │   │   └── catalog-page.ts
+│   │       │   └── movie-detail-page/
+│   │       │       ├── movie-detail-page.html
+│   │       │       ├── movie-detail-page.scss
+│   │       │       ├── movie-detail-page.spec.ts
+│   │       │       └── movie-detail-page.ts
+│   │       └── services/
+│   │           ├── pelicula.service.spec.ts
+│   │           └── pelicula.service.ts
+│   └── shared/
+│       ├── pipes/
+│       │   ├── currency-pipe.spec.ts
+│       │   ├── currency-pipe.ts
+│       │   ├── duration-pipe.spec.ts
+│       │   └── duration-pipe.ts
+│       └── ui/
+│           ├── badge-sala/
+│           │   ├── badge-sala.html
+│           │   ├── badge-sala.scss
+│           │   ├── badge-sala.spec.ts
+│           │   └── badge-sala.ts
+│           ├── glass-card/
+│           │   ├── glass-card.html
+│           │   ├── glass-card.scss
+│           │   ├── glass-card.spec.ts
+│           │   └── glass-card.ts
+│           ├── gold-button/
+│           │   ├── gold-button.html
+│           │   ├── gold-button.scss
+│           │   ├── gold-button.spec.ts
+│           │   └── gold-button.ts
+│           └── skeleton-loader/
+│               ├── skeleton-loader.html
+│               ├── skeleton-loader.scss
+│               ├── skeleton-loader.spec.ts
+│               └── skeleton-loader.ts
+├── estructura.txt
+├── index.html
+├── main.ts
+├── styles/
+│   ├── _glassmorphism.scss
+│   ├── styles.scss
+│   └── _variables.scss
+└── styles.scss
+
+38 directories, 100 files

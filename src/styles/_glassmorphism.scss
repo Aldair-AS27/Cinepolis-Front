@@ -1,0 +1,32 @@
+// Efecto cristal azulado transparente
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 34, 64, 0.55) 0%,
+    rgba(10, 17, 40, 0.35) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+}
+
+// Efecto cristal con borde y reflejo dorado elegante
+.glass-panel-gold {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.12) 0%,
+    rgba(10, 17, 40, 0.65) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(212, 175, 55, 0.08);
+}
+
+// Texto con efecto metálico dorado
+.gold-gradient-text {
+  background: linear-gradient(90deg, #FBF0B9 0%, #D4AF37 50%, #AA7C11 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

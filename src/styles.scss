@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+// 1. Importamos nuestros efectos transparentes PRIMERO (Regla estricta de SCSS)
+@use './styles/glassmorphism';
+
+// 2. Directivas base de Tailwind CSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// 3. Estilo global del fondo de la página (Azul abismal y texto blanco)
+body {
+  @apply bg-cinepolis-bg text-slate-100 font-sans antialiased selection:bg-gold selection:text-cinepolis-bg;
+  min-height: 100vh;
+  overflow-x: hidden;
+}

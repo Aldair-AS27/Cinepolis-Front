@@ -1,0 +1,75 @@
+<section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  @if (cargando()) {
+    <div class="glass-panel rounded-3xl p-10">
+      <app-skeleton-loader [filas]="6" />
+    </div>
+  } @else if (error()) {
+    <div class="glass-panel rounded-3xl p-10 text-center">
+      <p class="font-display text-lg text-gold-light">🎬 {{ error() }}</p>
+    </div>
+  } @else if (pelicula(); as detalle) {
+    <article class="relative overflow-hidden rounded-3xl border border-white/5">
+      <img
+        [src]="detalle.backdropUrl"
+        [alt]="'Fondo de ' + detalle.titulo"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-cinepolis-bg via-cinepolis-bg/80 to-cinepolis-bg/40"></div>
+
+      <div class="relative grid gap-8 p-6 sm:p-10 lg:grid-cols-[260px_1fr] lg:p-14">
+        <img
+          [src]="detalle.posterUrl"
+          [alt]="'Póster de ' + detalle.titulo"
+          class="mx-auto w-48 rounded-2xl border border-gold/30 shadow-gold-glow lg:w-full"
+        />
+
+        <div class="space-y-5">
+          <div class="flex flex-wrap items-center gap-3">
+            <app-badge-sala [texto]="detalle.formatoDestacado" />
+            <span
+              class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-slate-300"
+            >
+              {{ detalle.genero }}
+            </span>
+            <span
+              class="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-light"
+            >
+              {{ detalle.clasificacion }}
+            </span>
+          </div>
+
+          <h1 class="font-display text-3xl font-black text-white sm:text-5xl">{{ detalle.titulo }}</h1>
+
+          <p class="max-w-3xl text-sm leading-relaxed text-slate-300 sm:text-base">
+            {{ detalle.sinopsis }}
+          </p>
+
+          <dl class="grid gap-4 text-sm sm:grid-cols-3">
+            <div class="glass-panel rounded-xl p-4">
+              <dt class="text-[11px] uppercase tracking-[0.2em] text-slate-500">Duración</dt>
+              <dd class="mt-1 font-display text-gold-light">{{ detalle.duracionMinutos | duration }}</dd>
+            </div>
+            <div class="glass-panel rounded-xl p-4">
+              <dt class="text-[11px] uppercase tracking-[0.2em] text-slate-500">Formato</dt>
+              <dd class="mt-1 font-display text-gold-light">{{ detalle.formatoDestacado }}</dd>
+            </div>
+            <div class="glass-panel rounded-xl p-4">
+              <dt class="text-[11px] uppercase tracking-[0.2em] text-slate-500">Estado</dt>
+              <dd class="mt-1 font-display text-gold-light">{{ detalle.estado }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </article>
+
+    <section class="mt-10">
+      <h2 class="font-display text-2xl font-bold text-white">Elige tu horario</h2>
+      <p class="mt-1 text-sm text-slate-400">
+        Selecciona una función para continuar con la elección de butacas.
+      </p>
+      <div class="mt-6">
+        <app-showtime-selector [funciones]="funciones()" (seleccion)="reservar($event)" />
+      </div>
+    </section>
+  }
+</section>

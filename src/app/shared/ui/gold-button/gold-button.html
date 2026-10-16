@@ -1,0 +1,9 @@
+<button
+  [attr.type]="tipo()"
+  [disabled]="disabled()"
+  (click)="presionado.emit($event)"
+  class="inline-flex items-center justify-center gap-2 rounded-xl border border-gold/40 bg-gradient-to-r from-gold-light via-gold to-gold-dark px-6 py-3 font-display text-sm font-bold uppercase tracking-[0.15em] text-cinepolis-bg shadow-glass transition-all duration-300 hover:scale-[1.02] hover:shadow-gold-glow active:scale-95 disabled:pointer-events-none disabled:opacity-40"
+  [class.w-full]="anchoCompleto()"
+>
+  <ng-content />
+</button>
