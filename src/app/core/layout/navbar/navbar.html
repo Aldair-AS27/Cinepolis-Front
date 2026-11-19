@@ -20,6 +20,7 @@
       >
         Cartelera
       </a>
+     @if (authService.isAdmin()) {
       <a
         routerLink="/dashboard"
         routerLinkActive="text-gold-light"
@@ -27,12 +28,21 @@
       >
         Dashboard
       </a>
-      <span
-        class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-400 md:inline-flex"
+      <button
+        (click)="authService.logout()"
+        class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-red-400 transition-colors hover:text-red-300"
       >
-        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400"></span>
-        IMAX Laser · Lima
-      </span>
+        Salir
+      </button>
+    } @else {
+      <a
+        routerLink="/login"
+        routerLinkActive="text-gold-light"
+        class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 transition-colors duration-300 hover:text-gold"
+      >
+        Admin
+      </a>
+    }
     </div>
   </nav>
 </header>
