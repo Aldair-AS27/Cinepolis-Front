@@ -2,7 +2,7 @@
   <div class="glass-panel w-full max-w-md rounded-2xl border border-white/10 p-8 shadow-2xl">
     <div class="mb-6 text-center">
       <span class="text-xs font-semibold uppercase tracking-[0.25em] text-gold">
-        Panel Administrativo
+        Iniciar Sesión
       </span>
       <h1 class="mt-2 font-display text-2xl font-bold text-white">
         Iniciar Sesión
@@ -11,6 +11,7 @@
         Acceso exclusivo para personal autorizado de Cinépolis
       </p>
     </div>
+    
 
     <form (ngSubmit)="onSubmit()" class="space-y-5">
       <div>
@@ -55,5 +56,11 @@
         {{ loading() ? 'Verificando...' : 'Ingresar al Dashboard' }}
       </button>
     </form>
+     <p class="mt-6 text-center text-xs text-slate-400">
+      ¿Eres nuevo en Cinépolis?
+      <a routerLink="/registro" class="font-semibold text-gold hover:underline">
+        Crear una cuenta
+      </a>
+    </p>
   </div>
 </section>
