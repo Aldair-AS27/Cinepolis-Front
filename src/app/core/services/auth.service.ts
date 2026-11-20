@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 export interface AuthResponse {
   token: string;
@@ -50,4 +50,24 @@ export class AuthService {
     this.isAdmin.set(false);
     this.router.navigate(['/']);
   }
+
+  register(datos: {
+  nombres: string;
+  apellidos: string;
+  correoElectronico: string;
+  password: string;
+  telefono: string;
+}) {
+  return this.http.post<any>(`${this.apiUrl}/register`, datos).pipe(
+    tap((res) => {
+      if (res?.token) {
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('rol', res.rol || 'CLIENTE');
+        localStorage.setItem('usuario', res.nombre || datos.nombres);
+        localStorage.setItem('correo', res.correo || datos.correoElectronico);
+        // Si usas signals en tu AuthService, actualízalos aquí igual que en login()
+      }
+    })
+  );
+}
 }
