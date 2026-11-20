@@ -8,6 +8,8 @@ import { mockBackendInterceptor } from './core/interceptors/mock-backend-interce
 import { errorInterceptor } from './core/interceptors/error-interceptor';
 import { apiResponseInterceptor } from './core/interceptors/api-response-interceptor';
 
+import { authInterceptor } from './core/interceptors/auth.interceptor'; 
+
 const interceptors: HttpInterceptorFn[] = [
   // 1º reescribe /api -> apiUrl real (Railway) salvo en modo mock.
   apiUrlInterceptor,
@@ -23,6 +25,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors(interceptors)),
+    provideHttpClient(withInterceptors([...interceptors, authInterceptor])),
   ],
 };

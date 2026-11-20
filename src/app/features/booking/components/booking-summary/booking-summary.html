@@ -73,16 +73,26 @@
     </p>
   }
 
-  @if (bloqueo(); as reserva) {
-    <div class="mt-4 rounded-xl border border-emerald-500/40 bg-emerald-900/20 p-4">
-      <p class="font-display text-sm font-bold text-emerald-300">✅ ¡Asientos bloqueados!</p>
-      <p class="mt-1 text-xs text-emerald-200/80">
-        {{ reserva.butacasBloqueadas.length }} asientos reservados por
-        <span class="font-bold text-emerald-100">{{ temporizadorTexto() }}</span>
-      </p>
-      <p class="mt-1 text-xs text-emerald-200/70">
-        Total estimado: {{ reserva.totalEstimado | currency }}
-      </p>
+ @if (bloqueo(); as reserva) {
+    <div class="mt-4 rounded-xl border border-emerald-500/40 bg-emerald-900/20 p-4 space-y-3">
+      <div>
+        <p class="font-display text-sm font-bold text-emerald-300">✅ ¡Asientos bloqueados!</p>
+        <p class="mt-1 text-xs text-emerald-200/80">
+          {{ reserva.butacasBloqueadas.length }} asientos reservados por
+          <span class="font-bold text-emerald-100">{{ temporizadorTexto() }}</span>
+        </p>
+        <p class="mt-1 text-xs text-emerald-200/70">
+          Total estimado: {{ subtotal() | currency }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        (click)="irACheckout()"
+        class="w-full rounded-xl bg-emerald-500 py-2.5 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-emerald-400"
+      >
+        Continuar a Dulcería y Pago →
+      </button>
     </div>
   }
 </aside>

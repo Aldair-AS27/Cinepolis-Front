@@ -1,0 +1,138 @@
+<div class="flex min-h-screen flex-col bg-slate-950 text-white lg:flex-row">
+  <!-- Barra superior SOLO para Celular / Tablet -->
+  <header class="glass-panel sticky top-0 z-40 border-b border-white/10 lg:hidden">
+    <div class="flex items-center justify-between px-4 py-3">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-gold/40 bg-gold/10 text-sm">
+          🎬
+        </span>
+        <span class="gold-gradient-text font-display text-base font-black tracking-[0.2em]">
+          CINÉPOLIS
+        </span>
+      </div>
+      <button
+        (click)="authService.logout()"
+        class="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-red-400"
+      >
+        Salir
+      </button>
+    </div>
+
+    <nav class="flex gap-2 overflow-x-auto border-t border-white/10 px-4 py-2 text-xs">
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-slate-300"
+      >
+        📊 Dashboard
+      </a>
+      <a
+        routerLink="/admin/peliculas"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-slate-300"
+      >
+        🎥 Películas
+      </a>
+      <a
+        routerLink="/admin/salas"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-slate-300"
+      >
+        🪑 Salas
+      </a>
+      <a
+        routerLink="/admin/horarios"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="whitespace-nowrap rounded-lg border border-transparent px-3 py-1.5 text-slate-300"
+      >
+        🕒 Horarios
+      </a>
+      <a
+        routerLink="/"
+        class="whitespace-nowrap rounded-lg px-3 py-1.5 text-slate-400"
+      >
+        ← Cartelera
+      </a>
+    </nav>
+  </header>
+
+  <!-- Sidebar SOLO para PC (lg en adelante) -->
+  <aside class="glass-panel fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-white/10 lg:flex">
+    <div class="flex items-center gap-3 border-b border-white/10 px-6 py-5">
+      <span class="flex h-9 w-9 items-center justify-center rounded-xl border border-gold/40 bg-gold/10 text-base">
+        🎬
+      </span>
+      <div>
+        <span class="gold-gradient-text font-display text-lg font-black tracking-[0.25em]">
+          CINÉPOLIS
+        </span>
+        <p class="text-[10px] uppercase tracking-widest text-slate-400">Panel Admin</p>
+      </div>
+    </div>
+
+    <nav class="flex-1 space-y-1 px-4 py-6">
+      <p class="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+        Principal
+      </p>
+      <a
+        routerLink="/admin/dashboard"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
+      >
+        📊 Dashboard
+      </a>
+
+      <p class="mb-2 mt-6 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+        Gestión
+      </p>
+      <a
+        routerLink="/admin/peliculas"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
+      >
+        🎥 Películas
+      </a>
+      <a
+        routerLink="/admin/salas"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
+      >
+        🪑 Salas
+      </a>
+      <a
+        routerLink="/admin/horarios"
+        routerLinkActive="bg-gold/15 text-gold border-gold/30"
+        class="flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/5 hover:text-white"
+      >
+        🕒 Horarios
+      </a>
+
+      <div class="pt-6">
+        <a
+          routerLink="/"
+          class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-slate-400 transition hover:bg-white/5 hover:text-gold"
+        >
+          ← Volver a la Cartelera
+        </a>
+      </div>
+    </nav>
+
+    <div class="border-t border-white/10 p-4">
+      <div class="mb-3 rounded-xl bg-white/5 px-3 py-2.5">
+        <p class="truncate text-sm font-semibold text-white">{{ adminName }}</p>
+        <p class="text-[11px] uppercase tracking-wider text-gold">Administrador</p>
+      </div>
+      <button
+        (click)="authService.logout()"
+        class="w-full rounded-xl border border-red-500/30 bg-red-500/10 py-2 text-xs font-semibold uppercase tracking-widest text-red-400 transition hover:bg-red-500/20"
+      >
+        Cerrar Sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="min-w-0 flex-1 p-4 sm:p-6 lg:ml-64 lg:p-8">
+    <router-outlet />
+  </main>
+</div>

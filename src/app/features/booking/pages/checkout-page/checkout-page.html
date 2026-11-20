@@ -1,0 +1,283 @@
+<section class="mx-auto max-w-6xl px-4 py-10">
+  @if (reservaConfirmada(); as ticket) {
+    <!-- VISTA DE TICKET QR CONFIRMADO -->
+    <div class="mx-auto max-w-lg rounded-3xl border border-emerald-500/30 bg-slate-900/90 p-8 text-center shadow-2xl">
+      <p class="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-400">Compra Exitosa</p>
+      <h1 class="mt-2 font-display text-2xl font-bold text-white">¡Tu boleto está listo!</h1>
+      <p class="mt-1 text-sm text-slate-400">Presenta este código QR al ingresar a la sala</p>
+
+      <div class="my-6 inline-block rounded-2xl bg-white p-4">
+        <img [src]="qrUrl(ticket)" alt="Código QR de acceso" class="h-44 w-44" />
+      </div>
+
+      <div class="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-left text-sm">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Código de Reserva</span>
+          <span class="font-display font-bold text-gold">{{ ticket.codigoReserva }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Película</span>
+          <span class="font-semibold text-white">{{ datos()?.tituloPelicula }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Sala / Butacas</span>
+          <span class="font-semibold text-white">
+            {{ datos()?.nombreSala }} · {{ datos()?.codigosButacas?.join(', ') }}
+          </span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Método de Pago</span>
+          <span class="font-semibold text-white">{{ metodoPago() }}</span>
+        </div>
+        <div class="flex justify-between border-t border-white/10 pt-2">
+          <span class="text-slate-400">Total Pagado</span>
+          <span class="font-display font-bold text-emerald-400">
+            S/ {{ (ticket.montoTotal ?? totalFinal()) | number: '1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-col gap-3 print:hidden">
+        <button
+          type="button"
+          (click)="descargarBoleta()"
+          class="w-full rounded-xl border border-gold/50 bg-gold/10 py-3 font-display text-xs font-bold uppercase tracking-widest text-gold transition hover:bg-gold/20"
+        >
+          📄 Descargar Boleta (PDF)
+        </button>
+
+        <a
+          routerLink="/"
+          class="inline-block w-full rounded-xl bg-gold py-3 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-gold-light"
+        >
+          Volver a la Cartelera
+        </a>
+      </div>
+    </div>
+  } @else if (datos(); as info) {
+    <!-- VISTA DE DULCERÍA (OPCIONAL) + PASARELA DE PAGO -->
+    <div class="mb-6">
+      <p class="text-xs font-semibold uppercase tracking-[0.25em] text-gold">Paso Final</p>
+      <h1 class="font-display text-2xl font-bold text-white">Dulcería y Pago</h1>
+      <p class="text-sm text-slate-400">Agrega combos opcionales (máx. {{ maxPorProducto }} por producto) y completa tu pago</p>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-3">
+      <!-- Columna Izquierda: Dulcería -->
+      <div class="space-y-4 lg:col-span-2">
+        <h2 class="font-display text-lg font-bold text-white">🍿 Dulcería (Opcional)</h2>
+
+        @if (productos().length > 0) {
+          <div class="grid gap-4 sm:grid-cols-2">
+            @for (p of productos(); track (p.idProducto ?? p.id)) {
+              <div class="glass-panel flex flex-col justify-between rounded-2xl border border-white/10 p-4">
+                <div>
+                  @if (p.urlImagen || p.imagenUrl) {
+                    <img
+                      [src]="p.urlImagen ?? p.imagenUrl"
+                      [alt]="p.nombreProducto ?? p.nombre"
+                      class="mb-3 h-32 w-full rounded-xl object-cover"
+                    />
+                  }
+                  <span class="rounded bg-gold/15 px-2 py-0.5 text-[10px] font-bold uppercase text-gold">
+                    {{ p.categoria || 'SNACK' }}
+                  </span>
+                  <h3 class="mt-2 font-semibold text-white">{{ p.nombreProducto ?? p.nombre }}</h3>
+                  <p class="mt-1 text-xs text-slate-400">{{ p.descripcion }}</p>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
+                  <span class="font-display font-bold text-gold-light">
+                    S/ {{ (p.precioActual ?? p.precio) | number: '1.2-2' }}
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      (click)="cambiarCantidad(p.idProducto ?? p.id, -1)"
+                      [disabled]="(cantidades()[p.idProducto ?? p.id] || 0) <= 0 || tiempoExpirado()"
+                      class="h-7 w-7 rounded-lg border border-white/15 bg-white/5 text-white hover:bg-white/15 disabled:opacity-40"
+                    >
+                      −
+                    </button>
+                    <span class="w-5 text-center text-sm font-bold text-white">
+                      {{ cantidades()[p.idProducto ?? p.id] || 0 }}
+                    </span>
+                    <button
+                      type="button"
+                      (click)="cambiarCantidad(p.idProducto ?? p.id, 1)"
+                      [disabled]="(cantidades()[p.idProducto ?? p.id] || 0) >= maxPorProducto || tiempoExpirado()"
+                      class="h-7 w-7 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-light disabled:opacity-40"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-slate-400">
+            No hay productos de dulcería disponibles en este momento. Puedes continuar directo al pago.
+          </div>
+        }
+      </div>
+
+      <!-- Columna Derecha: Resumen y Pasarela de Pago -->
+      <aside class="glass-panel-gold h-fit rounded-3xl p-6 space-y-5">
+        <h2 class="font-display text-lg font-bold text-gold-light">Resumen Final</h2>
+
+        <!-- Temporizador -->
+        <div
+          class="rounded-xl border px-3 py-2 text-center text-xs font-bold"
+          [class]="
+            tiempoExpirado()
+              ? 'border-red-500/40 bg-red-500/15 text-red-300'
+              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+          "
+        >
+          @if (tiempoExpirado()) {
+            ⏱️ Tu tiempo ha expirado. Vuelve a seleccionar tus butacas.
+          } @else {
+            ⏱️ Tiempo restante para pagar: {{ temporizadorTexto() }}
+          }
+        </div>
+
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Película</span>
+            <span class="font-semibold text-white text-right">{{ info.tituloPelicula }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Horario</span>
+            <span class="text-white">{{ info.fechaHoraInicio | date: 'dd/MM · HH:mm' }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Butacas ({{ info.codigosButacas.length }})</span>
+            <span class="font-bold text-gold">{{ info.codigosButacas.join(', ') }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 border-t border-gold/20 pt-4 text-sm">
+          <div class="flex justify-between text-slate-300">
+            <span>Entradas</span>
+            <span>S/ {{ info.subtotalButacas | number: '1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between text-slate-300">
+            <span>Dulcería</span>
+            <span>S/ {{ subtotalDulceria() | number: '1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between pt-2 font-display text-lg font-black text-gold-light">
+            <span>Total a Pagar</span>
+            <span>S/ {{ totalFinal() | number: '1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- Selector Método de Pago -->
+        <div class="border-t border-gold/20 pt-4 space-y-3">
+          <label class="block text-xs uppercase tracking-wider text-slate-400">Método de Pago</label>
+          <div class="grid grid-cols-3 gap-2">
+            @for (m of ['TARJETA', 'YAPE', 'PLIN']; track m) {
+              <button
+                type="button"
+                (click)="seleccionarMetodo(m)"
+                class="rounded-xl border py-2 text-xs font-bold transition"
+                [class]="
+                  metodoPago() === m
+                    ? 'border-gold bg-gold/20 text-gold-light'
+                    : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'
+                "
+              >
+                {{ m }}
+              </button>
+            }
+          </div>
+
+          <!-- Campos dinámicos según método elegido -->
+          @if (metodoPago() === 'TARJETA') {
+            <div class="space-y-2.5 pt-1">
+              <input
+                type="text"
+                name="card_num_sim"
+                autocomplete="off"
+                inputmode="numeric"
+                [ngModel]="pagoTarjeta.numero"
+                (input)="formatearTarjeta($event)"
+                maxlength="19"
+                placeholder="0000 0000 0000 0000"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <input
+                type="text"
+                name="card_holder_sim"
+                autocomplete="off"
+                [(ngModel)]="pagoTarjeta.titular"
+                placeholder="Nombre del titular"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <div class="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  name="card_exp_sim"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  [ngModel]="pagoTarjeta.vencimiento"
+                  (input)="formatearVencimiento($event)"
+                  maxlength="5"
+                  placeholder="MM/AA"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+                />
+                <input
+                  type="password"
+                  name="card_cvv_sim"
+                  autocomplete="new-password"
+                  inputmode="numeric"
+                  [(ngModel)]="pagoTarjeta.cvv"
+                  maxlength="4"
+                  placeholder="CVV"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+                />
+              </div>
+            </div>
+          } @else {
+            <div class="space-y-2.5 pt-1">
+              <p class="text-[11px] text-slate-400">
+                Realiza el pago por <span class="font-bold text-white">{{ metodoPago() }}</span> e ingresa tu celular y el Nro. de operación de 8 dígitos de tu comprobante.
+              </p>
+              <input
+                type="tel"
+                name="celularBilletera"
+                [(ngModel)]="pagoBilletera.celular"
+                maxlength="9"
+                placeholder="Celular (ej. 987654321)"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <input
+                type="text"
+                name="nroOperacion"
+                [(ngModel)]="pagoBilletera.nroOperacion"
+                maxlength="8"
+                placeholder="Nro. de operación (8 dígitos)"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+            </div>
+          }
+        </div>
+
+        @if (error()) {
+          <div class="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
+            {{ error() }}
+          </div>
+        }
+
+        <button
+          type="button"
+          (click)="confirmarPago()"
+          [disabled]="procesando() || tiempoExpirado()"
+          class="w-full rounded-xl bg-gold py-3 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-gold-light disabled:opacity-50"
+        >
+          {{ tiempoExpirado() ? 'Tiempo Expirado' : (procesando() ? mensajeEstado() : 'Pagar S/ ' + (totalFinal() | number: '1.2-2')) }}
+        </button>
+      </aside>
+    </div>
+  }
+</section>

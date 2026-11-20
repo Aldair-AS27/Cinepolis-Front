@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://cinema-backend-mzeg.onrender.com',
+  apiUrl: 'http://localhost:8080',
   useMock: false,
 };
