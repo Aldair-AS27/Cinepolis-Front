@@ -25,6 +25,10 @@
             {{ datos()?.nombreSala }} · {{ datos()?.codigosButacas?.join(', ') }}
           </span>
         </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Método de Pago</span>
+          <span class="font-semibold text-white">{{ metodoPago() }}</span>
+        </div>
         <div class="flex justify-between border-t border-white/10 pt-2">
           <span class="text-slate-400">Total Pagado</span>
           <span class="font-display font-bold text-emerald-400">
@@ -33,19 +37,29 @@
         </div>
       </div>
 
-      <a
-        routerLink="/"
-        class="mt-6 inline-block w-full rounded-xl bg-gold py-3 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-gold-light"
-      >
-        Volver a la Cartelera
-      </a>
+      <div class="mt-6 flex flex-col gap-3 print:hidden">
+        <button
+          type="button"
+          (click)="descargarBoleta()"
+          class="w-full rounded-xl border border-gold/50 bg-gold/10 py-3 font-display text-xs font-bold uppercase tracking-widest text-gold transition hover:bg-gold/20"
+        >
+          📄 Descargar Boleta (PDF)
+        </button>
+
+        <a
+          routerLink="/"
+          class="inline-block w-full rounded-xl bg-gold py-3 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-gold-light"
+        >
+          Volver a la Cartelera
+        </a>
+      </div>
     </div>
   } @else if (datos(); as info) {
-    <!-- VISTA DE DULCERÍA (OPCIONAL) + MÉTODO DE PAGO -->
+    <!-- VISTA DE DULCERÍA (OPCIONAL) + PASARELA DE PAGO -->
     <div class="mb-6">
       <p class="text-xs font-semibold uppercase tracking-[0.25em] text-gold">Paso Final</p>
       <h1 class="font-display text-2xl font-bold text-white">Dulcería y Pago</h1>
-      <p class="text-sm text-slate-400">Agrega combos opcionales o continúa directo al pago</p>
+      <p class="text-sm text-slate-400">Agrega combos opcionales (máx. {{ maxPorProducto }} por producto) y completa tu pago</p>
     </div>
 
     <div class="grid gap-8 lg:grid-cols-3">
@@ -58,6 +72,13 @@
             @for (p of productos(); track (p.idProducto ?? p.id)) {
               <div class="glass-panel flex flex-col justify-between rounded-2xl border border-white/10 p-4">
                 <div>
+                  @if (p.urlImagen || p.imagenUrl) {
+                    <img
+                      [src]="p.urlImagen ?? p.imagenUrl"
+                      [alt]="p.nombreProducto ?? p.nombre"
+                      class="mb-3 h-32 w-full rounded-xl object-cover"
+                    />
+                  }
                   <span class="rounded bg-gold/15 px-2 py-0.5 text-[10px] font-bold uppercase text-gold">
                     {{ p.categoria || 'SNACK' }}
                   </span>
@@ -73,7 +94,8 @@
                     <button
                       type="button"
                       (click)="cambiarCantidad(p.idProducto ?? p.id, -1)"
-                      class="h-7 w-7 rounded-lg border border-white/15 bg-white/5 text-white hover:bg-white/15"
+                      [disabled]="(cantidades()[p.idProducto ?? p.id] || 0) <= 0 || tiempoExpirado()"
+                      class="h-7 w-7 rounded-lg border border-white/15 bg-white/5 text-white hover:bg-white/15 disabled:opacity-40"
                     >
                       −
                     </button>
@@ -83,7 +105,8 @@
                     <button
                       type="button"
                       (click)="cambiarCantidad(p.idProducto ?? p.id, 1)"
-                      class="h-7 w-7 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-light"
+                      [disabled]="(cantidades()[p.idProducto ?? p.id] || 0) >= maxPorProducto || tiempoExpirado()"
+                      class="h-7 w-7 rounded-lg bg-gold text-slate-950 font-bold hover:bg-gold-light disabled:opacity-40"
                     >
                       +
                     </button>
@@ -99,9 +122,25 @@
         }
       </div>
 
-      <!-- Columna Derecha: Resumen y Método de Pago -->
+      <!-- Columna Derecha: Resumen y Pasarela de Pago -->
       <aside class="glass-panel-gold h-fit rounded-3xl p-6 space-y-5">
         <h2 class="font-display text-lg font-bold text-gold-light">Resumen Final</h2>
+
+        <!-- Temporizador -->
+        <div
+          class="rounded-xl border px-3 py-2 text-center text-xs font-bold"
+          [class]="
+            tiempoExpirado()
+              ? 'border-red-500/40 bg-red-500/15 text-red-300'
+              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+          "
+        >
+          @if (tiempoExpirado()) {
+            ⏱️ Tu tiempo ha expirado. Vuelve a seleccionar tus butacas.
+          } @else {
+            ⏱️ Tiempo restante para pagar: {{ temporizadorTexto() }}
+          }
+        </div>
 
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
@@ -134,13 +173,13 @@
         </div>
 
         <!-- Selector Método de Pago -->
-        <div class="border-t border-gold/20 pt-4">
-          <label class="mb-2 block text-xs uppercase tracking-wider text-slate-400">Método de Pago</label>
+        <div class="border-t border-gold/20 pt-4 space-y-3">
+          <label class="block text-xs uppercase tracking-wider text-slate-400">Método de Pago</label>
           <div class="grid grid-cols-3 gap-2">
             @for (m of ['TARJETA', 'YAPE', 'PLIN']; track m) {
               <button
                 type="button"
-                (click)="metodoPago.set(m)"
+                (click)="seleccionarMetodo(m)"
                 class="rounded-xl border py-2 text-xs font-bold transition"
                 [class]="
                   metodoPago() === m
@@ -152,6 +191,76 @@
               </button>
             }
           </div>
+
+          <!-- Campos dinámicos según método elegido -->
+          @if (metodoPago() === 'TARJETA') {
+            <div class="space-y-2.5 pt-1">
+              <input
+                type="text"
+                name="card_num_sim"
+                autocomplete="off"
+                inputmode="numeric"
+                [ngModel]="pagoTarjeta.numero"
+                (input)="formatearTarjeta($event)"
+                maxlength="19"
+                placeholder="0000 0000 0000 0000"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <input
+                type="text"
+                name="card_holder_sim"
+                autocomplete="off"
+                [(ngModel)]="pagoTarjeta.titular"
+                placeholder="Nombre del titular"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <div class="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  name="card_exp_sim"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  [ngModel]="pagoTarjeta.vencimiento"
+                  (input)="formatearVencimiento($event)"
+                  maxlength="5"
+                  placeholder="MM/AA"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+                />
+                <input
+                  type="password"
+                  name="card_cvv_sim"
+                  autocomplete="new-password"
+                  inputmode="numeric"
+                  [(ngModel)]="pagoTarjeta.cvv"
+                  maxlength="4"
+                  placeholder="CVV"
+                  class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+                />
+              </div>
+            </div>
+          } @else {
+            <div class="space-y-2.5 pt-1">
+              <p class="text-[11px] text-slate-400">
+                Realiza el pago por <span class="font-bold text-white">{{ metodoPago() }}</span> e ingresa tu celular y el Nro. de operación de 8 dígitos de tu comprobante.
+              </p>
+              <input
+                type="tel"
+                name="celularBilletera"
+                [(ngModel)]="pagoBilletera.celular"
+                maxlength="9"
+                placeholder="Celular (ej. 987654321)"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+              <input
+                type="text"
+                name="nroOperacion"
+                [(ngModel)]="pagoBilletera.nroOperacion"
+                maxlength="8"
+                placeholder="Nro. de operación (8 dígitos)"
+                class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white outline-none focus:border-gold/60"
+              />
+            </div>
+          }
         </div>
 
         @if (error()) {
@@ -163,10 +272,10 @@
         <button
           type="button"
           (click)="confirmarPago()"
-          [disabled]="procesando()"
+          [disabled]="procesando() || tiempoExpirado()"
           class="w-full rounded-xl bg-gold py-3 font-display text-xs font-bold uppercase tracking-widest text-slate-950 transition hover:bg-gold-light disabled:opacity-50"
         >
-          {{ procesando() ? 'Procesando pago...' : 'Pagar y Generar Boleto' }}
+          {{ tiempoExpirado() ? 'Tiempo Expirado' : (procesando() ? mensajeEstado() : 'Pagar S/ ' + (totalFinal() | number: '1.2-2')) }}
         </button>
       </aside>
     </div>
