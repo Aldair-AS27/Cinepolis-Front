@@ -4,9 +4,13 @@ import { CatalogPage } from './features/movies/pages/catalog-page/catalog-page';
 import { MovieDetailPage } from './features/movies/pages/movie-detail-page/movie-detail-page';
 import { SeatSelectionPage } from './features/booking/pages/seat-selection-page/seat-selection-page';
 import { DashboardPage } from './features/dashboard/pages/dashboard-page/dashboard-page';
-// login
 import { LoginPage } from './features/auth/pages/login-page';
 import { adminGuard } from './core/guards/admin.guard';
+import { AdminLayout } from './features/admin/layout/admin-layout/admin-layout';
+import { AdminPeliculasPage } from './features/admin/pages/admin-peliculas/admin-peliculas';
+
+import { AdminSalasPage } from './features/admin/pages/admin-salas/admin-salas';
+import { AdminHorariosPage } from './features/admin/pages/admin-horarios/admin-horarios';
 
 export const routes: Routes = [
   {
@@ -14,20 +18,24 @@ export const routes: Routes = [
     component: Shell,
     children: [
       { path: '', component: CatalogPage, title: 'Cinépolis · Cartelera' },
-
-      // login 
-      { path: 'login', component: LoginPage, title: 'Cinépolis · Iniciar sesión' },
-      
-      { 
-        path: 'dashboard',
-         component: DashboardPage,
-         canActivate: [adminGuard],
-         title: 'Cinépolis · Horarios' 
-        },
-
+      { path: 'login', component: LoginPage, title: 'Cinépolis · Acceso Admin' },
       { path: 'pelicula/:id', component: MovieDetailPage, title: 'Cinépolis · Detalle' },
       { path: 'reserva/:funcionId', component: SeatSelectionPage, title: 'Cinépolis · Reserva' },
+      
     ],
   },
+  {
+    path: 'admin',
+    component: AdminLayout,
+    canActivate: [adminGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardPage, title: 'Admin · Dashboard' },
+      { path: 'peliculas', component: AdminPeliculasPage, title: 'Admin · Películas' },
+      { path: 'salas', component: AdminSalasPage, title: 'Admin · Salas' },
+      { path: 'horarios', component: AdminHorariosPage, title: 'Admin · Horarios' },
+    ],
+  },
+  { path: 'dashboard', redirectTo: 'admin/dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: '' },
 ];
